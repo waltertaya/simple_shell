@@ -9,7 +9,7 @@ A shell is a program that acts as an interface between the user and the operatin
 
 ### Authors
 a) `@waltertaya`
-b) ``
+b) `@Baruk1-netizen`
 
 
 ## Requirements
