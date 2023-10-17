@@ -226,16 +226,12 @@ int builtins_list(data_of_program *data)
 		{NULL, NULL}
 	};
 
-/*walk through the structure*/
 	for (iterator = 0; options[iterator].builtin != NULL; iterator++)
 	{
-/*if there is a match between the given command and a builtin,*/
 		if (str_compare(options[iterator].builtin, data->command_name, 0))
 		{
-/*execute the function, and return the return value of the function*/
 			return (options[iterator].function(data));
 		}
-/*if there is no match return -1 */
 	}
 	return (-1);
 }
@@ -252,7 +248,7 @@ int builtin_exit(data_of_program *data)
 	int i;
 
 	if (data->tokens[1] != NULL)
-	{/*if exists arg for exit, check if is a number*/
+	{
 		for (i = 0; data->tokens[1][i]; i++)
 			if ((data->tokens[1][i] < '0' || data->tokens[1][i] > '9')
 				&& data->tokens[1][i] != '+')
@@ -370,7 +366,6 @@ int builtin_help(data_of_program *data)
 			return (1);
 		}
 	}
-	/*if there is no match, print error and return -1 */
 	errno = EINVAL;
 	perror(data->command_name);
 	return (0);
@@ -385,12 +380,11 @@ int builtin_alias(data_of_program *data)
 {
 	int i = 0;
 
-	/* if there are no arguments, print all environment */
 	if (data->tokens[1] == NULL)
 		return (print_alias(data, NULL));
 
 	while (data->tokens[++i])
-	{/* if there are arguments, set or print each env variable*/
+	{
 		if (count_characters(data->tokens[i], "="))
 			set_alias(data->tokens[i], data);
 		else

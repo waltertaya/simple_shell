@@ -10,22 +10,19 @@ char *env_get_key(char *key, data_of_program *data)
 {
 	int i, key_length = 0;
 
-	/* validate the arguments */
 	if (key == NULL || data->env == NULL)
 		return (NULL);
 
-	/* obtains the leng of the variable requested */
 	key_length = str_length(key);
 
 	for (i = 0; data->env[i]; i++)
-	{/* Iterates through the environ and check for coincidence of the vame */
+	{
 		if (str_compare(key, data->env[i], key_length) &&
 		 data->env[i][key_length] == '=')
-		{/* returns the value of the key NAME=  when find it*/
+		{
 			return (data->env[i] + key_length + 1);
 		}
 	}
-	/* returns NULL if did not find it */
 	return (NULL);
 }
 
@@ -42,31 +39,26 @@ int env_set_key(char *key, char *value, data_of_program *data)
 {
 	int i, key_length = 0, is_new_key = 1;
 
-	/* validate the arguments */
 	if (key == NULL || value == NULL || data->env == NULL)
 		return (1);
 
-	/* obtains the leng of the variable requested */
 	key_length = str_length(key);
 
 	for (i = 0; data->env[i]; i++)
-	{/* Iterates through the environ and check for coincidence of the vame */
+	{
 		if (str_compare(key, data->env[i], key_length) &&
 		 data->env[i][key_length] == '=')
-		{/* If key already exists */
+		{
 			is_new_key = 0;
-			/* free the entire variable, it is new created below */
 			free(data->env[i]);
 			break;
 		}
 	}
-	/* make an string of the form key=value */
 	data->env[i] = str_concat(str_duplicate(key), "=");
 	data->env[i] = str_concat(data->env[i], value);
 
 	if (is_new_key)
-	{/* if the variable is new, it is create at end of actual list and we need*/
-	/* to put the NULL value in the next position */
+	{
 		data->env[i + 1] = NULL;
 	}
 	return (0);
@@ -82,27 +74,23 @@ int env_remove_key(char *key, data_of_program *data)
 {
 	int i, key_length = 0;
 
-	/* validate the arguments */
 	if (key == NULL || data->env == NULL)
 		return (0);
 
-	/* obtains the leng of the variable requested */
 	key_length = str_length(key);
 
 	for (i = 0; data->env[i]; i++)
-	{/* iterates through the environ and checks for coincidences */
+	{
 		if (str_compare(key, data->env[i], key_length) &&
 		 data->env[i][key_length] == '=')
-		{/* if key already exists, remove them */
+		{
 			free(data->env[i]);
 
-			/* move the others keys one position down */
 			i++;
 			for (; data->env[i]; i++)
 			{
 				data->env[i - 1] = data->env[i];
 			}
-			/* put the NULL value at the new end of the list */
 			data->env[i - 1] = NULL;
 			return (1);
 		}
@@ -138,33 +126,31 @@ int execute(data_of_program *data)
 	int retval = 0, status;
 	pid_t pidd;
 
-	/* check for program in built ins */
 	retval = builtins_list(data);
-	if (retval != -1)/* if program was found in built ins */
+	if (retval != -1)
 		return (retval);
 
-	/* check for program file system */
 	retval = find_program(data);
 	if (retval)
-	{/* if program not found */
+	{
 		return (retval);
 	}
 	else
-	{/* if program was found */
-		pidd = fork(); /* create a child process */
+	{
+		pidd = fork();
 		if (pidd == -1)
-		{ /* if the fork call failed */
+		{
 			perror(data->command_name);
 			exit(EXIT_FAILURE);
 		}
 		if (pidd == 0)
-		{/* I am the child process, I execute the program*/
+		{
 			retval = execve(data->tokens[0], data->tokens, data->env);
 			if (retval == -1) /* if error when execve*/
 				perror(data->command_name), exit(EXIT_FAILURE);
 		}
 		else
-		{/* I am the father, I wait and check the exit status of the child */
+		{
 			wait(&status);
 			if (WIFEXITED(status))
 				errno = WEXITSTATUS(status);
@@ -306,7 +292,6 @@ int find_program(data_of_program *data)
 	if (!data->command_name)
 		return (2);
 
-	/**if is a full_path or an executable in the same path */
 	if (data->command_name[0] == '/' || data->command_name[0] == '.')
 		return (check_file(data->command_name));
 
@@ -354,26 +339,22 @@ char **tokenize_path(data_of_program *data)
 	char **tokens = NULL;
 	char *PATH;
 
-	/* get the PATH value*/
 	PATH = env_get_key("PATH", data);
 	if ((PATH == NULL) || PATH[0] == '\0')
-	{/*path not found*/
+	{
 		return (NULL);
 	}
 
 	PATH = str_duplicate(PATH);
 
-	/* find the number of directories in the PATH */
 	for (i = 0; PATH[i]; i++)
 	{
 		if (PATH[i] == ':')
 			counter_directories++;
 	}
 
-	/* reserve space for the array of pointers */
 	tokens = malloc(sizeof(char *) * counter_directories);
 
-	/*tokenize and duplicate each token of path*/
 	i = 0;
 	tokens[i] = str_duplicate(_strtok(PATH, ":"));
 	while (tokens[i++])
@@ -407,7 +388,6 @@ int check_file(char *full_path)
 		}
 		return (0);
 	}
-	/*if not exist the file*/
 	errno = 127;
 	return (127);
 }
