@@ -1,16 +1,20 @@
 #ifndef HELPERS_H
 #define HELPERS_H
 
-/* Prompt to be printed */
-#define PROMPT_MSG "$" /* Needed to work with signal */
+/* PROMPT_MSG - prompt message for the shell @PROMPT_MSG: prompt message for the shell */
 
-/* Resume from the unused attibute */
+#define PROMPT_MSG "$"
+
+/* unused */
+
 #define UNUSED __attribute__((unused))
 
-/* buffer size for each read call in _getline */
+/* Buffer size*/
+
 #define BUFFER_SIZE 1024
 
-/************* FORMATTED STRING FOR HELP BUILT IN **************/
+/* HELP_CD_MSG - help message for cd builtin @HELP_CD_MSG: help message for cd builtin */
+ 
 
 #define HELP_CD_MSG "cd=\n"\
 "cd:\tcd [dir]\n\n"\
@@ -19,6 +23,8 @@
 "	as cd $HOME.\n"\
 "	if the argumenthelp is - (cd -), the command will be interpreted\n"\
 "	as cd $OLDPWD.\n\n"
+
+/* HELP_EXIT_MSG - help message for exit builtin @HELP_EXIT_MSG: help message for exit builtin */
 
 #define HELP_EXIT_MSG "exit=\n"\
 "exit:\texit [STATUS]\n\n"\
